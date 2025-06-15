@@ -271,7 +271,7 @@ function* createArbitrabletx({
       multipleArbitrableTransactionEth.methods.createTransaction(
         arbitrabletxReceived.timeout.toString(),
         arbitrabletxReceived.receiver,
-        `/ipfs/${metaEvidenceIPFSHash}/metaEvidence.json`
+        `/ipfs/${metaEvidenceIPFSHash}`
       ).send,
       {
         from: accounts[0],
@@ -329,7 +329,7 @@ function* createArbitrabletx({
             arbitrabletxReceived.token.address,
             arbitrabletxReceived.timeout.toString(),
             arbitrabletxReceived.receiver,
-            `/ipfs/${metaEvidenceIPFSHash}/metaEvidence.json`
+            `/ipfs/${metaEvidenceIPFSHash}`
           ).send({
             from: accounts[0]
           })
