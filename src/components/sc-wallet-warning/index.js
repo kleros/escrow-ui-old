@@ -9,11 +9,16 @@ export default function SmartContractWalletWarning() {
   const { account } = useWeb3React();
   const [isSmartContractWallet, setIsSmartContractWallet] = useState(false);
   const [showWarning, setShowWarning] = useState(() => {
-    const storedValue = JSON.parse(localStorage.getItem(storageKey), true);
-    return storedValue === null ? true : storedValue;
+    try {
+      const storedValue = localStorage.getItem(storageKey);
+      if (storedValue === null) return true;
+      return JSON.parse(storedValue);
+    } catch {
+      return true;
+    }
   });
 
-  useEffect(() => {    
+  useEffect(() => {
     web3.eth.getCode(account).then((code) => {
       setIsSmartContractWallet(code !== "0x");
     });
