@@ -14,6 +14,7 @@ import Resume from "../containers/arbitrable-tx/resume";
 import Footer from "../components/footer";
 import Notifications from "../containers/settings";
 import AccountInfo from "../containers/account-info";
+import SmartContractWalletWarning from "../components/sc-wallet-warning";
 import { ReactComponent as Kleros } from "../assets/kleros.svg";
 import { ReactComponent as Transaction } from "../assets/transaction.svg";
 import { ReactComponent as Invoice } from "../assets/invoice.svg";
@@ -67,6 +68,8 @@ function Main({ children }) {
   return (
     <div className="App">
       <header className="header">
+        <SmartContractWalletWarning />
+
         <Link to="/" className="header-logo-link">
           <Kleros
             className="logo"
