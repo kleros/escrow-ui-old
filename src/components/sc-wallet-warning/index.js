@@ -36,7 +36,16 @@ export default function SmartContractWalletWarning() {
 
   return (
     <div className="sc-wallet-warning">
-      <p>You are using a smart contract wallet. This is not recommended.</p>
+      <p>
+        You are using a smart contract wallet. This is not recommended.{" "}
+        <a
+          href="https://docs.kleros.io/kleros-faq#can-i-use-a-smart-contract-account-to-stake-in-the-court"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn more.
+        </a>
+      </p>
       <button onClick={handleClose}>X</button>
     </div>
   );
