@@ -3,26 +3,48 @@ import React, { useEffect, useState } from 'react'
 import { web3 } from '../../bootstrap/dapp-api';
 import './sc-wallet-warning.css';
 
-const storageKey = "@kleros/escrow/alert/smart-contract-wallet-warning";
+const EIP7702_PREFIX = '0xef0100'
+const STORAGE_KEY = "@kleros/escrow/alert/smart-contract-wallet-warning";
 
 export default function SmartContractWalletWarning() {
   const { account } = useWeb3React();
   const [isSmartContractWallet, setIsSmartContractWallet] = useState(false);
-  const [showWarning, setShowWarning] = useState(() => {
+  const [showWarning, setShowWarning] = useState(true);
+
+  const updateAccountWarningDismissalState = (account) => {
     try {
-      const storedValue = localStorage.getItem(storageKey);
-      if (storedValue === null) return true;
-      return JSON.parse(storedValue);
+      const storedValue = localStorage.getItem(`${STORAGE_KEY}:${account}`)
+      if (storedValue === null) {
+        setShowWarning(true)
+      } else {
+        setShowWarning(JSON.parse(storedValue))
+      }
     } catch {
-      return true;
+      setShowWarning(true)
     }
-  });
+  }
+
+  const checkIfSmartContractWallet = (account) => {
+    web3.eth.getCode(account).then((code) => {
+      const formattedCode = code.toLowerCase()
+      const isEip7702Eoa = formattedCode.startsWith(EIP7702_PREFIX)
+
+      //Do not show warning for EIP-7702 EOAs
+      setIsSmartContractWallet(code !== '0x' && !isEip7702Eoa)
+    }).catch((error) => {
+      console.error('Error checking smart contract wallet', error)
+      setIsSmartContractWallet(false)
+    });
+  }
 
   useEffect(() => {
-    web3.eth.getCode(account).then((code) => {
-      setIsSmartContractWallet(code !== "0x");
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!account) {
+      setIsSmartContractWallet(false)
+      return;
+    }
+
+    updateAccountWarningDismissalState(account);
+    checkIfSmartContractWallet(account);
   }, [account]);
 
   if (!showWarning || !isSmartContractWallet) {
@@ -31,7 +53,7 @@ export default function SmartContractWalletWarning() {
 
   const handleClose = () => {
     setShowWarning(false);
-    localStorage.setItem(storageKey, false);
+    localStorage.setItem(`${STORAGE_KEY}:${account}`, false);
   }
 
   return (
