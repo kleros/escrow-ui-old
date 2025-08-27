@@ -1,13 +1,12 @@
 import { useWeb3React } from '@web3-react/core';
 import React, { useEffect, useState } from 'react'
-import { web3 } from '../../bootstrap/dapp-api';
 import './sc-wallet-warning.css';
 
 const EIP7702_PREFIX = '0xef0100'
 const STORAGE_KEY = "@kleros/escrow/alert/smart-contract-wallet-warning";
 
 export default function SmartContractWalletWarning() {
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
   const [isSmartContractWallet, setIsSmartContractWallet] = useState(false);
   const [showWarning, setShowWarning] = useState(true);
 
@@ -24,8 +23,8 @@ export default function SmartContractWalletWarning() {
     }
   }
 
-  const checkIfSmartContractWallet = (account) => {
-    web3.eth.getCode(account).then((code) => {
+  const checkIfSmartContractWallet = (account, library) => {
+    library.eth.getCode(account).then((code) => {
       const formattedCode = code.toLowerCase()
       const isEip7702Eoa = formattedCode.startsWith(EIP7702_PREFIX)
 
@@ -38,14 +37,14 @@ export default function SmartContractWalletWarning() {
   }
 
   useEffect(() => {
-    if (!account) {
+    if (!account || !library) {
       setIsSmartContractWallet(false)
       return;
     }
 
     updateAccountWarningDismissalState(account);
-    checkIfSmartContractWallet(account);
-  }, [account]);
+    checkIfSmartContractWallet(account, library);
+  }, [account, library]);
 
   if (!showWarning || !isSmartContractWallet) {
     return null;
