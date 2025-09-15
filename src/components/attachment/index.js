@@ -32,7 +32,7 @@ const Attachment = ({ URI, title, description }) => {
         effect="solid"
         data-multiline={true}
       />
-      {URI.split('.').pop() !== '' ? (
+      {URI && URI.split('.').pop() !== '' ? (
         <a
           href={URI.replace(/^\/ipfs\//, 'https://cdn.kleros.link/ipfs/')}
           rel="noopener noreferrer"
